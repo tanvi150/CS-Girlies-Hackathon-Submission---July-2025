@@ -14,7 +14,7 @@ Built with simplicity, creativity, and emotion in mind, Chronovault merges nosta
    - No → Entry is displayed plainly with original content.
 
 
-##🚀 What It Does
+## 🚀 What It Does
 
 **Email Sign-up/Login:** Users register using their email (via Firebase).
 
