@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>📁 Saved Experiences</title>
+  <style>
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background-image: url('images and icons/bgcolor.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;   
+      margin: 0;
+      padding: 40px 20px;
+      color: #873D0D;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      min-height: 100vh;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #873D0D;
+    }
+
+    table {
+      width: 100%;
+      max-width: 1000px;
+      border-collapse: collapse;
+      background-color:#FFF5EE ;
+      border: 2px solid #873D0D;
+      margin-top: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 16px;
+      color: #873D0D;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 2px solid #873D0D;
+      text-align: center;
+
+    }
+
+    th {
+      background: rgba(0, 255, 255, 0.1);
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    a {
+      color: #873D0D;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .delete-btn {
+      background-color: #ff4d4d;
+      font-family: 'Courier New', Courier, monospace;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: #cc0000;
+    }
+
+    #date-filter {
+      padding: 6px;
+      border-radius: 6px;
+      border: 2px solid #873D0D;
+      background: rgba(0, 0, 0, 0.3);
+      color: #873D0D;
+      font-size: 14px;
+      max-width: 150px;
+    }
+
+    .clear-btn {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 2px solid #873D0D;
+      background: rgba(0, 0, 0, 0.3);
+      color: #873D0D;
+      font-size: 14px;
+      cursor: pointer;
+      margin-left: 6px;
+    }
+
+    .clear-btn:hover {
+      background: rgba(0, 255, 255, 0.1);
+    }
+
+    input[type="datetime-local"] {
+      padding: 4px;
+      background: rgba(0, 0, 0, 0.2);
+      color: #873D0D;
+      border: 1px solid #873D0D;
+      border-radius: 4px;
+    }
+
+    .name-input {
+      width: 90%;
+      background: transparent;
+      border: 1px solid #873D0D;
+      color: #873D0D;
+      border-radius: 4px;
+      text-align: center;
+      font-family: 'Courier New', Courier, monospace;
+}
+
+  </style>
+</head>
+<body>
+  <h2>📂 Your Saved Moments</h2>
+
+  <label for="date-filter" style="margin-bottom: 10px;">
+    Filter by Date:
+    <input type="date" id="date-filter" />
+    <button class="clear-btn" onclick="clearDateFilter()">Clear</button>
+  </label>
+
+  <table id="memory-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Delivery Time</th>
+        <th>View</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody id="list"></tbody>
+  </table>
+
+  <a href="main.html" class="back-link">⬅ Back to Main Menu</a>
+  <script>
+  const list = document.getElementById('list');
+  const dateFilter = document.getElementById('date-filter');
+  let storage = JSON.parse(localStorage.getItem('savedMedia') || '[]');
+
+  function pad(n) {
+    return n < 10 ? '0' + n : n;
+  }
+
+  function getHHMM(isoString) {
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return '';
+    return pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+
+  function formatDate(isoString) {
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString().split('T')[0];
+  }
+
+  function formatDelivery(isoString) {
+    if (!isoString) return '';
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return '';
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  // Save changes to name only
+  function saveName(index, newName) {
+    if (!storage[index]) return;
+    storage[index].name = newName.trim() || storage[index].name;
+    if (['media', 'recording', 'text'].includes((storage[index].type || '').toLowerCase())) {
+      storage[index].title = newName.trim() || storage[index].title;
+    }
+    localStorage.setItem('savedMedia', JSON.stringify(storage));
+    renderList(dateFilter.value || null);
+  }
+
+  function renderList(filterDate = null) {
+    list.innerHTML = '';
+    const filteredStorage = filterDate
+      ? storage.filter(item => formatDate(item.time) === filterDate)
+      : storage;
+
+    if (filteredStorage.length === 0) {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td colspan="8">No saved memories${filterDate ? ' for selected date.' : ' yet.'}</td>`;
+      list.appendChild(row);
+      return;
+    }
+
+    filteredStorage.forEach((item, i) => {
+      const row = document.createElement('tr');
+      const type = item.type ? item.type.charAt(0).toUpperCase() + item.type.slice(1) : 'Unknown';
+      const usesTitle = ['media', 'recording', 'text'].includes(item.type?.toLowerCase());
+      const displayName = usesTitle ? (item.title || item.name || `${type} ${i + 1}`)
+                                   : (item.name || `${type} ${i + 1}`);
+      const displayDate = formatDate(item.time);
+      const displayTime = getHHMM(item.time);
+
+      const deliveryTime = item.deliveryTime ? new Date(item.deliveryTime) : null;
+      const isUnlocked = !deliveryTime || new Date() >= deliveryTime;
+
+      const viewCell = isUnlocked
+        ? `<a href="view.html?index=${i}" target="_blank">👁 View</a>`
+        : `<span title="Available at ${deliveryTime?.toLocaleString() || ''}">🔒 Locked</span>`;
+
+      row.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${type}</td>
+        <td>
+        <input 
+          type="text" 
+          value="${displayName.replace(/"/g, '&quot;')}" 
+          class="name-input"
+          onchange="saveName(${i}, this.value)" 
+          placeholder="Enter file name" 
+         />
+         </td>
+
+        <td>${displayDate}</td>
+        <td>${displayTime}</td>
+        <td>${formatDelivery(item.deliveryTime)}</td>
+        <td>${viewCell}</td>
+        <td><button class="delete-btn" onclick="deleteItem(${i})">Delete</button></td>
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  function deleteItem(index) {
+    storage.splice(index, 1);
+    localStorage.setItem('savedMedia', JSON.stringify(storage));
+    renderList(dateFilter.value || null);
+  }
+
+  function clearDateFilter() {
+    dateFilter.value = '';
+    renderList();
+  }
+
+  dateFilter.addEventListener('change', () => {
+    renderList(dateFilter.value || null);
+  });
+
+  renderList();
+</script>
+
+</body>
+</html>

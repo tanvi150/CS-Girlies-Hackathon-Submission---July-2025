@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Time Capsule</title>
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+  <h2 class="welcome">Welcome, <span id="username"></span>!</h2>
+  <div class="options">
+  <button onclick="showVideo()">
+    <img src="Images and icons/video-recorder.png" alt="Record Video" class="icon" />
+    <span>Record Video</span>
+  </button>
+  <button onclick="showAudio()">
+    <img src="Images and icons/mic.png" alt="Record Audio" class="icon" />
+    <span>Record Audio</span>
+  </button>
+  <button onclick="showText()">
+    <img src="Images and icons/writing.png" alt="Write a Letter" class="icon" />
+    <span>Write A Letter</span>
+  </button>
+  <button onclick="window.location.href='saved.html'">
+    <img src="Images and icons/folder.png" alt="Saved Experiences" class="icon" />
+    <span>Saved Experiences</span>
+  </button>
+</div>
+
+  <!-- VIDEO -->
+<div id="video-area" class="hidden">
+  <input type="text" id="videoTitle" class="title-input" placeholder="Enter video title..." />
+  <div id="live-video-container">
+    <video id="video" autoplay muted playsinline></video>
+    <div>
+      <button onclick="startVideoRecording()">Start Recording</button>
+      <button onclick="stopVideoRecording()">Stop & Save</button>
+      <button onclick="restartVideoRecording()">Restart</button>
+    </div>
+  </div>
+  <div id="recorded-video-container">
+    <video id="recorded-video" controls playsinline></video>
+  </div>
+</div>
+
+  <!-- AUDIO -->
+<div id="audio-area" class="hidden">
+  <input type="text" id="audioTitle" class="title-input" placeholder="Enter audio title..." />
+  <button onclick="startAudioRecording()">Start Voice Message</button>
+  <button onclick="stopAudioRecording()">Stop & Save</button>
+  <audio id="recorded-audio" controls></audio>
+</div>
+
+  <!-- TEXT -->
+<div id="text-area" class="hidden">
+  <input type="text" id="textTitle" class="title-input" placeholder="Enter letter title..." />
+  <textarea id="letter" rows="10" cols="50" placeholder="Write your message here..."></textarea>
+  <button onclick="saveText()">Save Letter</button>
+</div>
+  <!-- Unlock modal -->
+  <div id="unlockModal" class="modal hidden">
+    <div style="background:#fff;padding:20px;max-width:300px;margin:100px auto;border-radius:8px;">
+      <label for="unlockDateTime">Schedule Time Capsule Unlock:</label>
+      <input type="datetime-local" id="unlockDateTime" />
+      <br /><br />
+      <button id="confirmUnlockButton">Save</button>
+      <button id="cancelUnlockButton">Cancel</button>
+    </div>
+  </div>
+
+  <div id="output"></div>
+
+  <!-- Logout button -->
+  <button onclick="logout()">
+  <img src="Images and icons/logout.png" alt="Logout Icon" class="logout-icon" />
+  <span>Logout</span>
+</button>
+
+  
+
+  <!-- Firebase SDK -->
+   /*API Keys removed for confidentiality*/
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: ,
+      authDomain: ,
+      projectId: ,
+      storageBucket: ,
+      messagingSenderId: ,
+      appId: 
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('username').textContent = user.displayName || user.email;
+      } else {
+        window.location.href = 'index.html';
+      }
+    });
+
+    function checkforUnlockedCapsules() {
+      const storage = JSON.parse(localStorage.getItem('savedMedia') || '[]');
+      const now = new Date();
+      let unlockedCount = 0;
+
+      storage.forEach(item => {
+        if (item.deliveryTime && !item.delivered) {
+          const delivery = new Date(item.deliveryTime);
+          if (now >= delivery) {
+            unlockedCount++;
+            item.delivered = true;
+          }
+        }
+      });
+
+      if (unlockedCount > 0) {
+        alert(`You have ${unlockedCount} time capsule(s) ready to view!`);
+        localStorage.setItem('savedMedia', JSON.stringify(storage));
+      }
+    }
+
+    window.onload = () => {
+      checkforUnlockedCapsules();
+      setInterval(checkforUnlockedCapsules, 5 * 60 * 1000);
+    };
+
+    window.addEventListener('focus', checkforUnlockedCapsules);
+
+    window.logout = async function () {
+      try {
+        await signOut(auth);
+        window.location.href = 'index.html';
+      } catch (err) {
+        alert("Error signing out: " + err.message);
+      }
+    };
+  </script>
+
+  <!-- Your app code (no p5.js / p5.sound anymore) -->
+  <script src="scripts.js"></script>
+  <script src="helper-functions.js"></script>
+  </body>
+</html>

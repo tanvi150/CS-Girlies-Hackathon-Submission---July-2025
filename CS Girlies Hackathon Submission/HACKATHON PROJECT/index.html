@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ChronoVault</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
+  
+</head>
+<body>
+  <div class="site-header">
+   <div class="site-title">ChronoVault</div>
+   <div class="site-tagline">Step into your vault of time. Record. Remember. Relive</div>
+  </div>
+  
+  <div class="login-container">
+    <h1> LOGIN</h1>
+    <input type="text" id="login-username" placeholder="Enter Username or Email">
+    <input type="password" id="login-password" placeholder="Enter Password">
+
+    <div class="login-options">
+      <label><input type="checkbox" id="remember-me"> Remember Me</label>
+     <a href="reset.html" class="forgot-password">Forgot Password?</a>
+    </div>
+
+    <button onclick="login()">Login</button>
+
+
+    <p class="register-prompt">Don’t have an account?</p>
+    <button onclick="window.location.href='register.html'">Register</button>
+
+  <p id="login-msg" style="color:red;"></p>
+  </div>
+
+  <!-- Firebase SDKs -->
+   <script type="module">
+      //Import Firebase core and authentication modules from CDN
+      import {initializeApp} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+      import {getAuth, signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+      //Firebase project configuration
+      /*API Keys removed for confidentiality*/
+      const firebaseConfig = {
+      apiKey: ,
+      authDomain: ,
+      projectId: ,
+      storageBucket: ,
+      messagingSenderId: ,
+      appId: 
+    };
+
+    //Initialise Firebase app
+    const app = initializeApp(firebaseConfig);
+    //Initialise Firebase Authentication service
+    const auth = getAuth(app);
+    
+    //Autofill remembered email
+     window.onload = function () {
+     const rememberedUser = localStorage.getItem('rememberedUser');
+     if (rememberedUser) {
+       document.getElementById('login-username').value = rememberedUser;
+       document.getElementById('remember-me').checked = true;
+    }
+  };
+
+  //Login function
+      window.login = async function()
+    {
+      const email = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value;
+      const remember = document.getElementById('remember-me').checked;
+      const messageElement = document.getElementById('login-msg');
+      try
+      {
+        //Sign in using Firebase Authentication
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+        //Store email in localStorage is "Remember Me" is checked
+        if (remember)
+       {
+          localStorage.setItem('rememberedUser', email);
+       }
+       else 
+       {
+          localStorage.removeItem('rememberedUser');
+       }
+
+       //Redirect to main.html on success
+       window.location.href = 'main.html';
+      } catch (error){
+        messageElement.textContent = error.message;
+      }
+    };
+
+  </script>
+  </body>
+</html>

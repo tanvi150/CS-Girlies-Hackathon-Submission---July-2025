@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Memories</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      color: #6b2f4a;
+      margin: 0;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: row;
+      height: 100vh;
+    }
+
+    .left, .right {
+      height: 100vh;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .left {
+      font-family: 'Courier New', Courier, monospace;
+      width: 50%;
+      border-right: 2px solid #6b2f4a66;
+      position: relative;
+      background-color: #b56c3f;
+      color: #6b2f4a;
+    }
+
+    .right {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f9daa7;
+      position: relative;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    pre {
+      background: rgba(193, 20, 89, 0.85);
+      padding: 15px;
+      border-radius: 8px;
+      color: #6b2f4a;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin-top: 10px;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .letter-box {
+     background-color:#ABA09E;
+     border: 2px  #E6A52D;
+     padding: 20px;
+     border-radius: 12px;
+     font-size: 16px;
+     line-height: 1.6;
+    }
+
+    video, audio {
+      max-width: 90%;
+      display: block;
+      margin: 20px auto;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 500px;
+      pointer-events: auto;
+    }
+
+    .back {
+      display: block;
+      margin-top: 30px;
+      text-align: center;
+      color: #6b2f4a;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+
+    #non-ai-toggle {
+      text-align: center;
+    }
+
+    .download-link-container {
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .download-link-container a {
+      color: #6b2f4a;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .download-link-container a:hover {
+      color: #c11459;
+    }
+
+    .bg-video {
+      background-image: url('Images and icons/Image 2.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .bg-audio {
+      background-image: url('audio-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .bg-letter {
+      background-image: url('Images and icons/Image 1.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .left::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .left > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* New Layout for Bottom Controls */
+    #avatar-controls-wrapper {
+      width: 100%;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+    }
+
+    .bottom-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* Custom select wrapper to position arrow */
+    .custom-select {
+      position: relative;
+      display: inline-block;
+      width: 140px; /* adjust as needed */
+    }
+
+    /* Hide default arrow */
+    .custom-select select {
+      width: 100%;
+      padding: 8px 35px 8px 12px; /* space for arrow on right */
+      border: 2px solid #EFB063;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      background-color: #EFB063;
+      color: #ffffff;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    .custom-select select:focus {
+      outline: none;
+      border-color: #c11459;
+    }
+
+    /* Custom arrow (hidden by default) */
+    .custom-select::after {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      top: 50%;
+      right: 12px;
+      width: 8px;
+      height: 8px;
+      border-style: solid;
+      border-width: 2px 2px 0 0;
+      border-color: #6b2f4a;
+      transform: translateY(-50%) rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Show arrow on focus or hover */
+    .custom-select:hover::after,
+    .custom-select:focus-within::after {
+      opacity: 1;
+    }
+
+    .readonly-display 
+    {
+      width: 100%;
+      padding: 8px 12px;
+      border: 2px solid #EFB063;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      background-color: #EFB063;
+      color: #ffffff;
+      user-select: none;
+      cursor: default;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      height: 36px;
+    }
+
+    /* OFF AI styling */
+    #btn-off-ai {
+      cursor: pointer;
+      color: #c11459;
+      font-weight: 600;
+      user-select: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 2px solid #c11459;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      font-size: 14px;
+      align-self: flex-start; /* align with selects */
+    }
+
+    #btn-off-ai:hover,
+    #btn-off-ai:focus {
+      background-color: #c11459;
+      color: white;
+      outline: none;
+    }
+
+    #btn-on-ai {
+  cursor: pointer;
+  color: #c11459;
+  font-weight: 600;
+  user-select: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid #c11459;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-size: 14px;
+  display: inline-block;
+  text-align: center;
+}
+
+#btn-on-ai:hover,
+#btn-on-ai:focus {
+  background-color: #c11459;
+  color: white;
+  outline: none;
+}
+
+    .video-wrapper {
+  border: 4px solid #EFB063;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 20px auto;
+  background-color: #fff6eb;
+  max-width: 95%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.video-wrapper h2 {
+  color: #6b2f4a;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+  </style>
+</head>
+<body>
+  <div id="left-panel" class="left">
+    <h1>Your Saved Memory</h1>
+    <div id="memory-display">Loading...</div>
+    <a href="saved.html" class="back" onclick="speechSynthesis.cancel()">⬅ Back to Saved Moments</a>
+    <div id="non-ai-toggle"></div>
+  </div>
+
+  <div class="right" id="avatar-panel" style="display: none;">
+    <model-viewer id="avatar-male" src="https://male-avatar.netlify.app/myavatar.glb" alt="Male Avatar" camera-controls style="display: none;"></model-viewer>
+    <model-viewer id="avatar-female" src="https://female-avatar.netlify.app/myavatar.glb" alt="Female Avatar" camera-controls style="display: none;"></model-viewer>
+    <div id="avatar-controls-wrapper">
+      <div class="bottom-controls">
+       <label class="custom-select">
+         <div id="gender-display" class="readonly-display" aria-label="Selected gender"></div>
+       </label>
+
+       <label class="custom-select">
+          <div id="tone-display" class="readonly-display" aria-label="Selected tone"></div>
+       </label>
+
+        <span id="btn-off-ai" class="ai-toggle-link" role="button" tabindex="0" aria-label="Turn AI off">OFF AI</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="ai-narrator.js"></script>
+  
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const index = parseInt(params.get('index'), 10);
+    const savedMedia = JSON.parse(localStorage.getItem('savedMedia') || '[]');
+    const avatarEnabled = localStorage.getItem('avatarEnabled') === 'yes';
+    let gender = localStorage.getItem('selectedGender') || 'female';
+    let tone = localStorage.getItem('tone') || 'passive-aggressive';
+
+    const container = document.getElementById('memory-display');
+    const leftPanel = document.getElementById('left-panel');
+    const avatarPanel = document.getElementById('avatar-panel');
+    const maleAvatar = document.getElementById('avatar-male');
+    const femaleAvatar = document.getElementById('avatar-female');
+    const nonAIToggleDiv = document.getElementById('non-ai-toggle');
+
+    const item = savedMedia[index];
+
+    if (!item) {
+      container.innerHTML = '<p>Memory not found.</p>';
+      setTimeout(() => window.location.href = 'saved.html', 2000);
+    } else {
+      const { type, data, title, name } = item;
+      const displayName = title || name || `Memory ${index + 1}`;
+      const downloadFilename = displayName.replace(/\s+/g, '_');
+
+      leftPanel.classList.remove('bg-video', 'bg-audio', 'bg-letter');
+      switch ((type || '').toLowerCase()) {
+        case 'video': leftPanel.classList.add('bg-video'); break;
+        case 'audio': leftPanel.classList.add('bg-audio'); break;
+        case 'letter': leftPanel.classList.add('bg-letter'); break;
+      }
+
+      let content = '';
+      switch ((type || '').toLowerCase()) {
+        case 'video':
+          content += `
+                    <div class="video-wrapper">
+                     <p style="font-weight: bold; text-align: center; font-size: 18px; color: #6b2f4a;">Title: ${displayName}</p>
+                     <video controls src="${data}"></video>
+                    <div class="download-link-container">
+                    <a href="${data}" download="${downloadFilename}.webm">Download Video</a>
+                </div>
+                </div>
+                      `;
+          break;
+        case 'audio':
+          content += `<h2>${displayName}</h2>`;
+          content += `<audio controls src="${data}"></audio><div class="download-link-container"><a href="${data}" download="${downloadFilename}.webm">Download Audio</a></div>`;
+          break;
+        case 'letter':
+  const decoded = decodeBase64DataUrl(data);
+  const letterBody = decoded.replace(/^Title:.*\n\s*\n?/im, '').trim();
+
+  content += `
+    <p style="font-weight: bold; text-align: center; font-size: 18px; color: #6b2f4a;">
+      Title: ${displayName}
+    </p>
+    <pre class="letter-box">${letterBody}</pre>
+    <div class="download-link-container">
+      <a href="${data}" download="${downloadFilename}.txt">Download Letter</a>
+    </div>
+  `;
+  break;
+        default:
+          content += `<h2>${displayName}</h2>`;
+          content += `<p>Unsupported type: ${type}</p>`;
+      }
+
+      container.innerHTML = content;
+    }
+
+    if (!avatarEnabled) 
+    {
+      avatarPanel.remove();
+      leftPanel.classList.remove('left');
+      leftPanel.classList.add('full-width');
+      const onAILink = document.createElement('span');
+      onAILink.textContent = 'ON AI';
+      onAILink.id = 'btn-on-ai';
+      onAILink.setAttribute('role', 'button');
+      onAILink.setAttribute('tabindex', '0');
+      onAILink.onclick = () => {
+        localStorage.setItem('avatarEnabled', 'yes');
+        window.location.href = `view.html?index=${index}`; //redirect to view.html
+      };
+      onAILink.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') onAILink.click(); };
+      nonAIToggleDiv.appendChild(onAILink);
+    } 
+    else 
+    {
+      avatarPanel.style.display = 'flex';
+      maleAvatar.style.display = gender === 'male' ? 'block' : 'none';
+      femaleAvatar.style.display = gender === 'female' ? 'block' : 'none';
+
+      // Setup gender and tone <select> dropdowns
+      const genderDisplay = document.getElementById('gender-display');
+      const toneDisplay = document.getElementById('tone-display');
+
+      if (genderDisplay)
+      {
+        genderDisplay.textContent = gender.charAt(0).toUpperCase() + gender.slice(1);
+      }
+
+      if (toneDisplay)
+      {
+        toneDisplay.textContent = tone.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      }
+
+      const offAILink = document.getElementById('btn-off-ai');
+      offAILink.onclick = () => {
+        speechSynthesis.cancel(); //Immediately stop AI Narrator
+        localStorage.setItem('avatarEnabled', 'no');
+        window.location.reload();
+      };
+      offAILink.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          offAILink.click();
+        }
+      };
+    }
+
+    // --- Narration: Trigger after 5s ---
+    let isNarrationEnabled = false;
+
+    if (avatarEnabled && item)
+    {
+      speechSynthesis.onvoiceschanged = () => {
+      triggerAINarration(item, tone, gender);
+      };
+
+      if (speechSynthesis.getVoices().length > 0)
+      {
+        triggerAINarration(item, tone, gender); //fallback in case voice already loaded
+      }
+    }
+
+    async function triggerAINarration(item, tone, gender)
+    {
+      //1. Get the text content to narrate (for media -- transcript, for letter -- text)
+      let narrationText = '';
+
+      if (item.type === 'letter')
+      {
+        const rawText = decodeBase64DataUrl(item.data).replace(/^Title:.*\n\s*\n?/, '').trim();
+        narrationText = await getAINarration(rawText, tone);
+      }
+      else if (item.type === 'video' || item.type === 'audio')
+      {
+        console.log('Transcript for item:', item.transcript);
+        const transcriptText = (item.transcript || '').trim();
+        narrationText = transcriptText ? await getAINarration(transcriptText, tone) : '';
+      }
+      else
+      {
+        narrationText = ''; 
+      }
+
+
+      if (!narrationText)
+      {
+        return; //no narration text, exit early
+      }
+
+      //2. Setup Speech Synthesis utterance
+      const utterance = new SpeechSynthesisUtterance(narrationText);
+
+      //3. Select voice based on gender preference (simple heuristic)
+      const voices = speechSynthesis.getVoices();
+
+      let selectedVoice;
+
+      if (gender === 'female')
+      {
+        selectedVoice = voices.find(v => v.lang.startsWith('en') && /female|woman|zira/i.test(v.name)) || 
+        voices.find(v => v.lang.startsWith('en'));
+      }
+      else if (gender === 'male')
+      {
+        selectedVoice = voices.find(v => v.lang.startsWith('en') && /male|man|mark/i.test(v.name)) ||
+        voices.find(v => v.lang.startsWith('en'));
+      }
+
+      //Fallback if voices not found
+      if (!selectedVoice)
+      {
+        selectedVoice = voices[0];
+      }
+
+      utterance.voice = selectedVoice;
+
+      //Adjust pitch and rate based on tone
+      switch(tone) 
+      {
+       case 'roast':
+        utterance.pitch = 0.8;
+        utterance.rate = 1.1;
+        break;
+       case 'passive-aggressive':
+        utterance.pitch = 1.1;
+        utterance.rate = 0.9;
+        break;
+       case 'life-coach':
+       default:
+         utterance.pitch = 1.0;
+         utterance.rate = 1.0;
+         break;
+      }
+
+      speechSynthesis.speak(utterance);
+    }
+
+    function decodeBase64DataUrl(dataUrl) {
+      try {
+        const base64 = dataUrl.split(',')[1];
+        return atob(base64);
+      } catch { return ''; }
+    }
+
+  </script>
+</body>
+</html>
+

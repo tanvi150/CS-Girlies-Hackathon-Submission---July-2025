@@ -1,0 +1,311 @@
+body {
+  font-family: Arial, sans-serif;
+  background-image: url('Images and icons/background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;   
+  color: white;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;         
+  justify-content: flex-start;    
+  align-items: center;            
+  padding-top: 80px  
+  
+}
+
+.site-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .site-title {
+      font-family:'Press Start 2P', monospace;
+      font-size: 36px;
+      font-weight: bold;
+      color: #6D9892;
+      text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6);
+    }
+
+    .site-tagline {
+      font-family: 'Jua', sans-serif;
+      font-size: 16px;
+      font-style: italic;
+      color: #ddd;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+      margin-top: 5px;
+    }
+
+.login-container {
+  font-family:'Press Start 2P', monospace;
+  background-color: rgba(225, 255, 255, 0.2); 
+  border: 2px solid #DD5E09;
+  backdrop-filter: blur(10px);                  
+  -webkit-backdrop-filter: blur(10px);          
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  width: 300px;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  width: 300px;
+  text-align: center;
+}
+
+
+.login-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #3E446E;
+  font-family: 'Press Start 2P', monospace;
+
+}
+.login-container button {
+  font-family: 'Press Start 2P', monospace;
+  width: 80%;
+  padding: 12px 20px;
+  margin: 10px auto;
+  background: #F5971E;  
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3); 
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  
+}
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+
+.login-container button:hover {
+
+  transform: scale(1.03);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.hidden {
+  display: none;
+}
+
+textarea {
+  width: 80%;
+  padding: 10px;
+  font-size: 16px;
+}
+
+video, audio {
+  margin-top: 10px;
+  width: 80%;
+  max-width: 600px;
+}
+
+.entry {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.entry button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.entry button:hover {
+  background-color: #cc0000;
+}
+
+.welcome {
+  display: inline-block;
+  margin: 40px auto 20px;
+  font-size: 32px;
+  color: white;
+  text-align: center;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6);
+}
+
+
+button[onclick="logout()"] {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+button[onclick="logout()"]:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+}
+
+
+.options {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 160px;
+}
+
+.options button {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: rgb(106, 28, 28);
+  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.options button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+
+#video-area, #audio-area, #text-area {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  margin-bottom: 30px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+#video, #recorded-video, #recorded-audio {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 15px;
+  border-radius: 8px;
+}
+
+textarea#letter {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  resize: vertical;
+  border: none;
+  margin-bottom: 15px;
+}
+
+textarea::placeholder {
+  color: #ccc;
+}
+
+
+#video-area button,
+#audio-area button,
+#text-area button {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 14px;
+  padding: 10px 16px;
+  margin: 10px 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#video-area button:hover,
+#audio-area button:hover,
+#text-area button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+
+#output .entry {
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+#output .entry button {
+  background-color: #ff4d4d;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+#output .entry button:hover {
+  background-color: #cc0000;
+}
+
+
+.hidden {
+  display: none;
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Jua', sans-serif;
+  color: #873D0D;
+  font-size: 14px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.login-options label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.forgot-password {
+  font-family: 'Jua', sans-serif;
+  color: #873D0D;
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.register-prompt {
+  
+  font-family: 'Jua', sans-serif;
+  color: #873D0D;
+  font-size: 14px;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}

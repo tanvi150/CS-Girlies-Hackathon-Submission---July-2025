@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ChronoVault</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-container">
+    <h1>Register</h1>
+
+    <!-- Input for user's email -->
+    <input type="Email" id="reg-email" placeholder="Email">
+
+    <!-- Input for username (not saved in Firebase Auth directly) -->
+    <input type="text" id="reg-username" placeholder="Create a username">
+
+    <!-- Input for user's password -->
+    <input type="password" id="reg-password" placeholder="Create a password">
+
+    <!-- Button to trigger registration -->
+    <button onclick="register()">Register</button>
+
+    <!-- Element to display registration messages (errors or success) -->
+    <p id="register-msg" style="color:red;"></p>
+
+    <!-- Link back to login page -->
+    <p style="margin-top: 10px; font-size: 12px; line-height: 1.5;">
+    Already have an account?<br>
+    <a href="index.html" style="color:#3E446E; text-decoration: none;">Log in here</a>
+    </p>
+    </div>
+
+  <!--
+    Using a module script so we can import Firebase SDK modules directly
+    This script handles Firebase initialization and user registration
+  -->
+    <script type="module">
+      //Import Firebase core and authentication modules from CDN
+      import {initializeApp} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+      import {getAuth, createUserWithEmailAndPassword, updateProfile} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+      
+      //Firebase project configuration
+      /*API Keys removed for confidentiality*/
+      const firebaseConfig = {
+      apiKey: ,
+      authDomain: ,
+      projectId: ,
+      storageBucket: ,
+      messagingSenderId: ,
+      appId: 
+    };
+
+    //Initialise Firebase app
+    const app = initializeApp(firebaseConfig);
+    //Initialise Firebase Authentication service
+    const auth = getAuth(app);
+
+    //Define a global function so the HTML button onclick can access it
+    window.register = async function()
+    {
+      //Get values entered by the user in the form
+      const email = document.getElementById('reg-email').value;
+      const username = document.getElementById('reg-username').value;
+      const password  = document.getElementById('reg-password').value;
+      const messageElement = document.getElementById('register-msg');
+
+      //Basic validation to check that all fields are filled
+      if (!username || !email || !password)
+      {
+        messageElement.textContent = "Please fill in all the fields";
+        messageElement.style.color = 'red';
+        return;
+      }
+
+      try
+      {
+        //Await Firebase Auth to create user
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+        //Set the displayName to username
+        await updateProfile(userCredential.user, {displayName: username});
+
+        //Show success message
+        messageElement.textContent = "Registration successful! Redirecting...";
+        messageElement.style.color = 'green';
+
+        //Redirect to login page after a short delay
+        setTimeout(() => {
+          window.location.href = 'main.html';
+        }, 1500);
+      } catch (error){
+        //Show any auth error messages
+        messageElement.style.color = 'red';
+        messageElement.textContent = error.message;
+      }
+    };
+    </script>
+    </body>
+</html>

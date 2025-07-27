@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Experience</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f8d9a7;
+      border: 4px solid #EFB063;
+      border-radius: 50px;
+      color: #ffffff;
+      font-family: 'Jua', 'Segoe UI', 'Helvetica Neue', sans-serif;
+      padding: 20px;
+      text-align: center;
+      max-width: 1100px;
+      margin: 20px auto 0;
+      box-sizing: border-box;
+    }
+
+    h3 {
+      font-family: 'Jua', sans-serif;
+      border: 4px dashed #e4af6a;
+      background-color: #ffd89e;
+      padding: 20px 60px;
+      border-radius: 12px;
+      display: inline-block;
+      margin-bottom: 10px;
+      color: #ffffff;
+      font-size: 20px;
+      width: 80%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    model-viewer {
+      width: 300px;
+      height: 400px;
+      margin: 20px auto;
+      display: block;
+      opacity: 0;
+      animation: fadeInAvatar 1s ease-out forwards;
+    }
+
+    button {
+      font-family: 'Jua', 'Segoe UI', 'Helvetica Neue', sans-serif;
+      font-size: 16px;
+      padding: 10px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 8px;
+      border: none;
+      box-shadow: none !important;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    /* Yes/No buttons */
+    #q1 button:first-of-type {
+      background-color: #cacb9c;
+      color: white;
+      font-weight: bold;
+    }
+
+    #q1 button:last-of-type {
+      background-color: #f69999;
+      color: white;
+      font-weight: bold;
+    }
+
+    #q1 button.active {
+      background-color: #00dddd !important;
+      color: #000 !important;
+      transform: scale(1.05);
+    }
+
+
+    /* Tone buttons with icons and gradients */
+    .tone-button {
+      color: white;
+      font-weight: bold;
+      background-image: linear-gradient(45deg, #ff9a9e, #fad0c4);
+      border-radius: 50px;
+      border: none;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      font-size: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .tone-button:nth-child(2) {
+      background-image: linear-gradient(45deg, #a1c4fd, #c2e9fb);
+    }
+
+    .tone-button:nth-child(3) {
+      background-image: linear-gradient(45deg, #d4fc79, #96e6a1);
+    }
+
+    .tone-button img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .tone-button.active {
+      border: 3px solid #00dddd;
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    /* Gender segmented button */
+    .gender-segment {
+      display: flex;
+      justify-content: center;
+      width: 320px;
+      margin: 10px auto 0;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: none;
+      border: 1px solid #fbc666;
+    }
+
+    .gender-segment button {
+      flex: 1;
+      margin: 0;
+      border: none;
+      background-color: #fbc666;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 14px 0;
+      font-size: 18px;
+      border-radius: 0;
+      transition: background-color 0.3s ease;
+    }
+
+    .gender-segment button:first-child {
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+    }
+
+    .gender-segment button:last-child {
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      border-left: 2px solid white;
+    }
+
+    .gender-segment button:hover {
+      background-color: #e0b14d;
+      color: #000;
+    }
+
+    #go-button {
+      padding: 12px 40px;
+      font-size: 18px;
+      border-radius: 999px;
+      background-color: #fe5555;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(193, 20, 89, 0.852);
+      transition: all 0.3s ease;
+      margin-top: 30px;
+    }
+
+    #go-button:hover {
+      background-color: #00dddd;
+      transform: scale(1.08);
+    }
+
+    @keyframes fadeInAvatar {
+      to {
+        opacity: 1;
+      }
+    }
+
+    a.back {
+      display: inline-block;
+      margin-top: 30px;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    a.back:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Time Capsule Memory</h1>
+  <div id="viewer"><h2>Loading...</h2></div>
+
+  <div id="ai-setup">
+    <!-- Q1 -->
+    <div id="q1" style="margin: 20px;">
+      <h3>Do you want AI?</h3>
+      <div class="button-group">
+        <button data-value="yes" onclick="handleAvatarChoice('yes')">Yes!</button>
+        <button data-value="no" onclick="handleAvatarChoice('no')">No!</button>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div id="q2" style="margin: 20px; display:none;">
+      <h3>Please select your tone</h3>
+      <div class="button-group">
+        <button class="tone-button" data-value="life-coach" onclick="handleToneSelect('life-coach')">
+          <img src="Images and icons/Icon 2.png" alt="Life Coach Icon">
+          <span>Life Coach</span>
+        </button>
+        <button class="tone-button" data-value="roast" onclick="handleToneSelect('roast')">
+          <img src="Images and icons/Icon 1.png" alt="Roasting Icon">
+          <span>Roasting</span>
+        </button>
+        <button class="tone-button" data-value="passive-aggressive" onclick="handleToneSelect('passive-aggressive')">
+          <img src="Images and icons/Icon 3.png" alt="Passive Aggressive Icon">
+          <span>Passive Aggressive</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div id="q3" style="margin: 20px; display:none;">
+      <h3>Select your gender</h3>
+      <div class="gender-segment">
+        <button data-value="male" onclick="selectGender('male')">Male</button>
+        <button data-value="female" onclick="selectGender('female')">Female</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GO Button -->
+  <div style="margin-top: 30px; display: none;" id="go-container">
+    <button id="go-button" onclick="handleGoClick()">GO</button>
+  </div>
+
+  <!-- Avatars -->
+  <model-viewer id="avatar-male" src="https://male-avatar.netlify.app/myavatar.glb" alt="Male Avatar" auto-rotate camera-controls style="display: none;"></model-viewer>
+  <model-viewer id="avatar-female" src="https://female-avatar.netlify.app/myavatar.glb" alt="Female Avatar" auto-rotate camera-controls style="display: none;"></model-viewer>
+
+  <a href="saved.html" class="back">⬅ Back to Saved Moments</a>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const index = parseInt(params.get('index'), 10);
+    const savedMedia = JSON.parse(localStorage.getItem('savedMedia') || '[]');
+    const viewer = document.getElementById('viewer');
+    const maleAvatar = document.getElementById('avatar-male');
+    const femaleAvatar = document.getElementById('avatar-female');
+
+    const item = savedMedia[index];
+    if (!item) 
+    {
+      viewer.innerHTML = '<p>Item not found.</p>';
+      setTimeout(() => (window.location.href = 'memories.html'), 2000);
+    } 
+    else 
+    {
+      const { type, title, name } = item;
+      const displayName = title || name || `Memory ${index + 1}`;
+      viewer.innerHTML = `<h2>${displayName}</h2>`;
+    }
+
+    let selectedAvatar = null;
+    let selectedTone = null;
+    let selectedGender = null;
+
+    function handleAvatarChoice(answer) {
+      localStorage.setItem('avatarEnabled', answer === 'yes' ? 'yes' : 'no');
+      selectedAvatar = answer;
+      updateButtonHighlights('q1', selectedAvatar);
+
+      if (answer === 'yes')
+     {
+       //show Q2
+       document.getElementById('q2').style.display = 'block';
+     }
+     else
+     {
+       // If No, redirect immediately
+        window.location.href = `memories.html?index=${index}`;
+     }
+    }
+
+    function handleToneSelect(tone) {
+      localStorage.setItem('tone', tone);
+      selectedTone = tone;
+      updateButtonHighlights('q2', selectedTone);
+
+      //If user picks an option in Q2, show Q3
+      document.getElementById('q3').style.display = 'block';
+    }
+
+    function selectGender(gender) {
+      localStorage.setItem('selectedGender', gender);
+      selectedGender = gender;
+      updateButtonHighlights('q3', selectedGender);
+      showAvatar(gender);
+
+      //Show GO button
+      document.getElementById('go-container').style.display = 'block';
+    }
+
+    function updateButtonHighlights(containerId, selectedValue) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const buttons = container.querySelectorAll('button');
+      buttons.forEach(button => {
+        const val = button.getAttribute('data-value');
+        if (val === selectedValue) {
+          button.classList.add('active');
+        } else {
+          button.classList.remove('active');
+        }
+      });
+    }
+
+    function showAvatar(gender) {
+      maleAvatar.style.display = 'none';
+      femaleAvatar.style.display = 'none';
+      const avatar = gender === 'male' ? maleAvatar : femaleAvatar;
+      avatar.style.opacity = 0;
+      avatar.style.display = 'block';
+      setTimeout(() => {
+        avatar.style.opacity = 1;
+      }, 50);
+    }
+
+    function handleGoClick() {
+      window.location.href = `memories.html?index=${index}`;
+    }
+  </script>
+</body>
+</html>
