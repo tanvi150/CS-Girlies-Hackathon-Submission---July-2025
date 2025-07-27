@@ -100,9 +100,11 @@ function showOnly(areaId)
     currentVisibleArea = areaId;
 }
 
-function decodeBase64DataUrl(dataUrl) {
+function decodeBase64DataUrl(dataUrl) 
+{
   const base64 = dataUrl.split(',')[1];
-  try {
+  try 
+  {
     return atob(base64);
   } catch (err) {
     console.error("Base64 decode error:", err);
