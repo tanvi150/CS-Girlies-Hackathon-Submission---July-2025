@@ -150,7 +150,7 @@
       z-index: 1;
     }
 
-    /* New Layout for Bottom Controls */
+    /* Layout for Bottom Controls */
     #avatar-controls-wrapper {
       width: 100%;
       position: absolute;
@@ -165,17 +165,15 @@
       gap: 15px;
     }
 
-    /* Custom select wrapper to position arrow */
     .custom-select {
       position: relative;
       display: inline-block;
-      width: 140px; /* adjust as needed */
+      width: 140px; 
     }
 
-    /* Hide default arrow */
     .custom-select select {
       width: 100%;
-      padding: 8px 35px 8px 12px; /* space for arrow on right */
+      padding: 8px 35px 8px 12px; 
       border: 2px solid #EFB063;
       border-radius: 8px;
       font-size: 14px;
@@ -193,7 +191,6 @@
       border-color: #c11459;
     }
 
-    /* Custom arrow (hidden by default) */
     .custom-select::after {
       content: '';
       position: absolute;
@@ -210,7 +207,6 @@
       transition: opacity 0.2s ease;
     }
 
-    /* Show arrow on focus or hover */
     .custom-select:hover::after,
     .custom-select:focus-within::after {
       opacity: 1;
@@ -245,7 +241,7 @@
       border: 2px solid #c11459;
       transition: background-color 0.2s ease, color 0.2s ease;
       font-size: 14px;
-      align-self: flex-start; /* align with selects */
+      align-self: flex-start; 
     }
 
     #btn-off-ai:hover,
@@ -445,7 +441,7 @@
       };
     }
 
-    // --- Narration: Trigger after 5s ---
+    // --- Narration: Trigger ---
     let isNarrationEnabled = false;
 
     if (avatarEnabled && item)
